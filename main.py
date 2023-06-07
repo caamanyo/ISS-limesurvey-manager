@@ -44,7 +44,7 @@ def remove_all_files(path):
 def run():
     """Initialize program."""
     url = os.getenv("url")
-    username = os.getenv("username")
+    username = os.getenv("ls_user")
     password = os.getenv("password")
     exported_path = "fitxers exportats"
     GENERAL_FORM_ID = 292257
