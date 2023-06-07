@@ -1,11 +1,13 @@
 from limesurveyrc2api.limesurvey import LimeSurvey
 from collections import OrderedDict
 import os
+import shutil
 from dotenv import load_dotenv
 import base64
 import time as t
 
 load_dotenv()
+
 
 def log_time(func):
     def wrapper():
@@ -25,12 +27,26 @@ def ensure_dictionary(suspect):
     return suspect
 
 
+def remove_all_files(path):
+    """Remove all files from a selected folder."""
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
 @log_time
 def run():
     """Initialize program."""
     url = os.getenv("url")
     username = os.getenv("username")
     password = os.getenv("password")
+    exported_path = "fitxers exportats"
     GENERAL_FORM_ID = 292257
 
     # Open a session.
@@ -42,6 +58,17 @@ def run():
 
     al_data = api.token.get_participant_properties(
         GENERAL_FORM_ID, token_query_properties={"token": token})
+    al_fullname = f"{al_data['lastname']}, {al_data['firstname']}"
+    al_cicle = al_data["attribute_3"]
+    if len(al_cicle) > 3:
+        al_cicle = al_cicle[3]
+
+    # Create alumnus folder
+    al_path = f"{exported_path}/{al_cicle}/{al_fullname}"
+    if not os.path.exists(al_path):
+        os.makedirs(al_path)
+    else:
+        remove_all_files(al_path)
 
     params = OrderedDict([
         ("sessionkey", api.session_key),
@@ -58,16 +85,16 @@ def run():
     general_response = api.query("get_uploaded_files", params)
     general_files = ensure_dictionary(general_response)
 
-
     results = {**cicle_files, **general_files}
 
     for [key, value] in results.items():
         # Check if table exists
         if key == "status":
+            print("La taula de participants no existeix.")
             continue
 
         # Decode file
-        with open(f"fitxers exportats/{al_data['lastname']}, {al_data['firstname']} - {value['meta']['question']['title']}.pdf", "wb") as f:
+        with open(f"{al_path}/{al_fullname} - {value['meta']['question']['title']}.pdf", "wb") as f:
             f.write(base64.b64decode(value["content"]))
 
     # Close the session.
