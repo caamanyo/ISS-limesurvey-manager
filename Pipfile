@@ -6,7 +6,8 @@ name = "pypi"
 [packages]
 limesurveyrc2api = "*"
 python-dotenv = "*"
-pyqt5 = "*"
+pyqt6 = "*"
+ipdb = "*"
 
 [dev-packages]
 ipdb = "*"
