@@ -1,18 +1,26 @@
 """Manage Limesurvey petitions."""
 
 from limesurveyrc2api.limesurvey import LimeSurvey
+from limesurveyrc2api.exceptions import LimeSurveyError
 from collections import OrderedDict
 import os
 import shutil
 import constants as c
-import base64
+from exceptions import ParticipantError
 
 
-class LSHelper:
-    def __init__(self, url, username, password):
-        self.url = url
-        self.username = username
-        self.password = password
+class LSCon(LimeSurvey):
+    def __init__(self, url, username):
+        """Initialize class."""
+        super().__init__(url, username)
+
+    def get_participant_by_token(self, surveyid, token):
+        """Fetch participant data from a survey."""
+        try:
+            return self.token.get_participant_properties(
+                surveyid, token_query_properties={"token": token})
+        except LimeSurveyError as e:
+            raise ParticipantError("Aquest token no existeix.")
 
     def extract_all_participant_files(self):
         """Get all files imported by a participant based on her token."""
@@ -38,15 +46,11 @@ class LSHelper:
         # Path where files will be exported.
         exported_path = "fitxers exportats"
 
-        # Open a session.
-        api = LimeSurvey(self.url, self.username)
-        api.open(self.password)
-
         # Participant token to search for.
         token = input("Token de l'alumne: ")
+        al_data = self.get_participant_by_token(c.GENERAL_FORM_ID, token)
+        breakpoint()
 
-        al_data = api.token.get_participant_properties(
-            c.GENERAL_FORM_ID, token_query_properties={"token": token})
         al_fullname = f"{al_data['lastname']}, {al_data['firstname']}"
         al_cicle = al_data["attribute_3"]
         if len(al_cicle) > 3:
@@ -60,18 +64,18 @@ class LSHelper:
             remove_all_files(al_path)
 
         params = OrderedDict([
-            ("sessionkey", api.session_key),
+            ("sessionkey", self.session_key),
             ("surveyid", al_data["attribute_4"]),
             ("token", token)
         ])
 
         # Get a list of all the files related to that participant
-        cicle_response = api.query("get_uploaded_files", params)
+        cicle_response = self.query("get_uploaded_files", params)
         cicle_files = ensure_dictionary(cicle_response)
 
         # TODO: Extract files form the general form.
         params["surveyid"] = c.GENERAL_FORM_ID
-        general_response = api.query("get_uploaded_files", params)
+        general_response = self.query("get_uploaded_files", params)
         general_files = ensure_dictionary(general_response)
 
         results = {**cicle_files, **general_files}
@@ -87,4 +91,4 @@ class LSHelper:
                 f.write(base64.b64decode(value["content"]))
 
         # Close the session.
-        api.close()
+        self.close()
