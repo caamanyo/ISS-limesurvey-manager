@@ -1,8 +1,15 @@
 """Limesurvey invitation sender."""
 
-from limesurveyrc2api.limesurvey import LimeSurvey
+import logging
+
 from limesurveyrc2api.exceptions import LimeSurveyError
+from limesurveyrc2api.limesurvey import LimeSurvey
+
 from credentials import set_creds
+
+logging.basicConfig(filename="./status.log",
+                    format="%(asctime)s - %(message)s",
+                    datefmt="%y-%m-%d %H:%M:%S")
 
 
 def send_invites():
@@ -31,7 +38,7 @@ def send_invites():
         result = ls.token.invite_participants(survey_id, token_ids)
         print(result)
     except LimeSurveyError as e:
-        print(f"Error: {e}")
+        logging.warning(e)
         return
 
 
