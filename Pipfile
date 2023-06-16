@@ -10,7 +10,7 @@ ipdb = "*"
 
 [dev-packages]
 [scripts]
-run = "python main.py"
+send_invitations = "python main.py"
 
 [requires]
 python_version = "3.11"
