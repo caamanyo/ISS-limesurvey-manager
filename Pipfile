@@ -6,10 +6,11 @@ name = "pypi"
 [packages]
 limesurveyrc2api = "*"
 python-dotenv = "*"
-pyqt6 = "*"
 ipdb = "*"
 
 [dev-packages]
+[scripts]
+run = "python main.py"
 
 [requires]
 python_version = "3.11"
