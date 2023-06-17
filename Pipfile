@@ -10,6 +10,7 @@ pyqt6 = "*"
 ipdb = "*"
 
 [dev-packages]
+pyqt6-tools = "*"
 
 [requires]
 python_version = "3.11"
