@@ -2,13 +2,10 @@
 import sys
 from LSCon import LSCon
 from credentials import set_creds
-from limesurveyrc2api.exceptions import LimeSurveyError
-from exceptions import ParticipantError
 from ui.main_window import Ui_MainWindow
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QMenu
+from PyQt6.QtCore import QTranslator
+from PyQt6.QtWidgets import QApplication, QMainWindow
 
 
 class Window(QMainWindow):
@@ -29,9 +26,9 @@ class Window(QMainWindow):
         try:
             ls.extract_all_participant_files()
         except Exception as e:
-            self.centralWidget.setText(e.message)
+            self.ui.centralWidget.setText(e.message)
             return
-        self.centralWidget.setText("Documentació descarregada.")
+        self.ui.centralWidget.setText("Documentació descarregada.")
 
     def _connectActions(self):
         # Download participant documents
@@ -41,6 +38,9 @@ class Window(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    translator = QTranslator(app)
+    translator.load("ui/eng-cat.qm")
+    app.installTranslator(translator)
     win = Window()
     win.show()
     sys.exit(app.exec())
