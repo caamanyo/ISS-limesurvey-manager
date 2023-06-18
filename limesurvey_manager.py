@@ -4,6 +4,7 @@ from LSCon import LSCon
 from credentials import set_creds
 from limesurveyrc2api.exceptions import LimeSurveyError
 from exceptions import ParticipantError
+from ui.main_window import Ui_MainWindow
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction
@@ -16,27 +17,9 @@ class Window(QMainWindow):
     def __init__(self, parent=None):
         """Initialize."""
         super().__init__(parent)
-        self.setWindowTitle("Matrícula Salvador Seguí")
-        self.resize(1024, 768)
-        self.centralWidget = QLabel("Aplicació per gestionar la matrícula.")
-        self.centralWidget.setAlignment(
-            Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
-        self.setCentralWidget(self.centralWidget)
-        self._createActions()
-        self._createMenuBar()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
         self._connectActions()
-
-    def _createMenuBar(self):
-        """Create menu bar for the main window."""
-        menuBar = self.menuBar()
-        participantMenu = QMenu("Buscar alumnat", self)
-        menuBar.addMenu(participantMenu)
-        editParticipantMenu = menuBar.addMenu("Editar participant")
-        participantDocsMenu = menuBar.addMenu("Documentació")
-        participantDocsMenu.addAction(self.downloadDocsAction)
-
-    def _createActions(self):
-        self.downloadDocsAction = QAction("Download Documentation", self)
 
     def download_docs(self):
         """Download all files associated with a participant."""
@@ -52,7 +35,8 @@ class Window(QMainWindow):
 
     def _connectActions(self):
         # Download participant documents
-        self.downloadDocsAction.triggered.connect(self.download_docs)
+        self.ui.actionDescarregar_Documentaci.triggered.connect(
+            self.download_docs)
 
 
 if __name__ == "__main__":
