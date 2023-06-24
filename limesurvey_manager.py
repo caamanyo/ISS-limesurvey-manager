@@ -1,11 +1,14 @@
 """Main module."""
 import sys
-from LSCon import LSCon
-from credentials import set_creds
-from ui.main_window import Ui_MainWindow
 
 from PyQt6.QtCore import QTranslator
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import (QApplication, QErrorMessage, QInputDialog,
+                             QMainWindow, QTableView)
+from model import TableModel
+
+from credentials import set_creds
+from LSCon import LSCon
+from ui.main_window import Ui_MainWindow
 
 
 class Window(QMainWindow):
@@ -16,6 +19,10 @@ class Window(QMainWindow):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        data = [[1, 2, 3, 4], [1, 2, 3, 4]]
+        self.model = TableModel(data)
+        self.ui.tableView.setModel(self.model)
+        self.error_dialog = QErrorMessage(self)
         self._connectActions()
 
     def download_docs(self):
@@ -23,12 +30,16 @@ class Window(QMainWindow):
         creds = set_creds()
         ls = LSCon(creds.url, creds.username)
         ls.open(creds.password)
-        try:
-            ls.extract_all_participant_files()
-        except Exception as e:
-            self.ui.centralWidget.setText(e.message)
+        get_token = QInputDialog.getText(
+            self, "Descarregar documentació", "Introdueix el token a buscar")
+        if not get_token:
             return
-        self.ui.centralWidget.setText("Documentació descarregada.")
+
+        try:
+            ls.extract_all_participant_files(get_token)
+        except Exception as e:
+            self.error_dialog.showMessage(e.message, "Warning")
+            return
 
     def _connectActions(self):
         # Download participant documents
