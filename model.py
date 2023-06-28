@@ -1,25 +1,61 @@
 """Application model."""
 
 from PyQt6.QtCore import QAbstractTableModel, Qt
+from pandas import DataFrame
 
 
 class TableModel(QAbstractTableModel):
     """Model to convert LS data to be TableView compatible."""
 
-    def __init__(self, data=None):
+    def __init__(self, data: DataFrame = None):
         """Initialize class."""
         super().__init__()
         self._data = data
 
-    def data(self, index, role):
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
         """Create data model."""
         if role == Qt.ItemDataRole.DisplayRole:
-            return self._data[index.row()][index.column()]
+            value = self._data.iloc[index.row(), index.column()]
+            return str(value)
 
     def rowCount(self, index):
         """Get the number of rows."""
-        return len(self._data)
+        if self._data is None:
+            return 0
+        return self._data.shape[0]
 
     def columnCount(self, index):
         """Get the number of columns."""
-        return len(self._data[0])
+        if self._data is None:
+            return 0
+        return self._data.shape[1]
+
+    def headerData(self, section, orientation, role: Qt.ItemDataRole = Qt.ItemDataRole.DisplayRole):
+        headerLabels = {
+            "token": "Token",
+            "attribute_3": "Codi del cicle",
+            "attribute_4": "Id de cicle",
+            "sent": "Invitació enviada",
+            "completed": "Sol·licitud de matrícula completada",
+            "participant_info.email": "Email",
+            "participant_info.firstname": "Nom",
+            "participant_info.lastname": "Cognoms",
+        }
+        if role == Qt.ItemDataRole.DisplayRole:
+            if orientation == Qt.Orientation.Horizontal:
+                colName = str(self._data.columns[section])
+                return headerLabels[colName]
+            if orientation == Qt.Orientation.Vertical:
+                return str(self._data.index[section])
+
+    def getColumnName(self, index):
+        """Get column name based of an index."""
+        return self._data.columns[index.column()]
+
+    def rowToDict(self, row: int):
+        """Return a dict of a row of data."""
+        return self._data.iloc[row].to_dict()
+
+    def update(self, new_data: DataFrame):
+        """Update model."""
+        self._data = new_data
