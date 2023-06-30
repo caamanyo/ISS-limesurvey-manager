@@ -82,5 +82,6 @@ if __name__ == "__main__":
         time.sleep(60)
         participants_left = invite_participants()
 
+    print("No hi ha més invitacions a enviar.")
     # End LS connection.
     ls.close()
