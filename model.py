@@ -37,9 +37,9 @@ class TableModel(QAbstractTableModel):
             "attribute_4": "Id de cicle",
             "sent": "Invitació enviada",
             "completed": "Sol·licitud de matrícula completada",
-            "participant_info.email": "Email",
-            "participant_info.firstname": "Nom",
-            "participant_info.lastname": "Cognoms",
+            "email": "Email",
+            "firstname": "Nom",
+            "lastname": "Cognoms",
         }
         if role == Qt.ItemDataRole.DisplayRole:
             if orientation == Qt.Orientation.Horizontal:
@@ -52,9 +52,9 @@ class TableModel(QAbstractTableModel):
         """Get column name based of an index."""
         return self._data.columns[index.column()]
 
-    def rowToDict(self, row: int):
-        """Return a dict of a row of data."""
-        return self._data.iloc[row].to_dict()
+    def getColumnData(self, row: int):
+        """Return a row form the dataframe."""
+        return self._data.iloc[row]
 
     def update(self, new_data: DataFrame):
         """Update model."""

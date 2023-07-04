@@ -8,6 +8,7 @@ limesurveyrc2api = "*"
 python-dotenv = "*"
 pyqt6 = "*"
 ipdb = "*"
+pandas = "*"
 
 [dev-packages]
 pyqt6-tools = "*"
