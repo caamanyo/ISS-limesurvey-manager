@@ -63,8 +63,10 @@ class Window(QMainWindow):
                                "Bon dia", "No has seleccinat res.")
             info.exec()
             return
+
         row = index[0].row()
         row_data = self.model.getColumnData(row)
+
         alumnus = ParticipantData(row_data)
 
         try:
@@ -75,9 +77,7 @@ class Window(QMainWindow):
             self.error_dialog.showMessage(e.message, "Warning")
             return
 
-        for file in alumnus.files:
-            file.export_file()
-            print(file.name)
+        alumnus.export_all_files()
 
 
 

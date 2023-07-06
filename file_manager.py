@@ -5,10 +5,11 @@ import shutil
 import base64
 
 
-def remove_all_files(path):
+def remove_all_files(dir):
     """Remove all files from a selected folder."""
-    for filename in os.listdir(path):
-        file_path = path
+    for filename in os.listdir(dir):
+        file_path = os.path.join(dir, filename)
+
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
                 os.unlink(file_path)
@@ -23,13 +24,16 @@ def decode_file(file: str):
     return base64.b64decode(file)
 
 
-def write_file(file_path: str, contents):
+def write_file(file_path: list, contents):
     """Write a file with a given path."""
-    with open(file_path, "wb") as f:
+    path_to_write_to = os.path.join(*file_path)
+    with open(path_to_write_to, "wb") as f:
         f.write(contents)
 
 
-def create_folder(self, path: str) -> None:
-    """Create a folder if not already present."""
-    if not os.path.exists(path):
-        os.makedirs(path)
+def create_folders(*args: str) -> bool:
+    """Create a folder if not already present. Return false if path don't exists."""
+    folders_path = os.path.join(*args)
+    if not os.path.exists(folders_path):
+        os.makedirs(folders_path)
+    return folders_path
