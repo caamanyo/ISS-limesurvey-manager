@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'LS_manager.ui'
+# Form implementation generated from reading ui file 'app/ui/main_window.ui'
 #
 # Created by: PyQt6 UI code generator 6.5.1
 #
@@ -15,20 +15,24 @@ class Ui_MainWindow(object):
         MainWindow.resize(1154, 678)
         MainWindow.setTabShape(QtWidgets.QTabWidget.TabShape.Rounded)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        self.centralwidget.setEnabled(True)
+        self.centralwidget.setAutoFillBackground(True)
         self.centralwidget.setObjectName("centralwidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName("verticalLayout")
         self.tableView = QtWidgets.QTableView(parent=self.centralwidget)
-        self.tableView.setGeometry(QtCore.QRect(0, 10, 1151, 611))
         self.tableView.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.DefaultContextMenu)
         self.tableView.setAcceptDrops(True)
         self.tableView.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tableView.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.tableView.setObjectName("tableView")
+        self.verticalLayout.addWidget(self.tableView)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1154, 32))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1154, 24))
         self.menubar.setObjectName("menubar")
         self.menuSearchParticipant = QtWidgets.QMenu(parent=self.menubar)
         self.menuSearchParticipant.setEnabled(True)

@@ -4,10 +4,11 @@ import sys
 import pandas as pd
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import (QApplication, QErrorMessage,
-                             QMainWindow, QMessageBox)
+                             QMainWindow, QMessageBox, QHeaderView)
 
 from credentials import set_creds
 from ParticipantData import ParticipantData
+from searchData import SearchConditions
 from LSCon import LSCon
 from model import TableModel
 from ui.main_window import Ui_MainWindow
@@ -56,14 +57,16 @@ class Window(QMainWindow):
 
     def search_participant(self):
         """Fetch LS participants based on form responses."""
-        invitation_sent_idx = self.search_ui.ui.comboBox.currentIndex()
+        invitation_sent_idx = self.search_ui.ui.sentStatusComboBox.currentIndex()
+        lastname = self.search_ui.ui.lastNameLineEdit.text()
 
-        conditions = 
+        conditions = SearchConditions()
+        conditions.set_inv_sent(invitation_sent_idx)
+        conditions.set_lastname(lastname)
         res = self.ls.token.list_participants(
             292257,
             attributes=["attribute_3", "attribute_4", "sent", "completed"],
-            # conditions={"sent": ["<>", "N"]})
-            conditions={"lastname": ["LIKE", "tes"]})
+            conditions=conditions.to_dict())
         flat_res = pd.json_normalize(res)
         data = pd.DataFrame.from_dict(flat_res)
         data = data.rename(
@@ -76,6 +79,7 @@ class Window(QMainWindow):
         data = data.set_index("tid")
         self.model.update(data)
         self.model.layoutChanged.emit()
+        self.main_ui.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
 
     def download_docs(self):
         """Download all files associated with a participant."""
@@ -116,7 +120,7 @@ class Window(QMainWindow):
             self.download_docs)
         self.main_ui.actionSearch_Participant.triggered.connect(
             self.toggle_search_form)
-        self.search_ui.ui.pushButton.clicked.connect(self.search_participant)
+        self.search_ui.ui.btnSubmit.clicked.connect(self.search_participant)
         # self.ui.tableView.clicked.connect(self.print_selection)
 
 

@@ -26,40 +26,57 @@
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="1">
-     <widget class="QComboBox" name="comboBox">
-      <item>
-       <property name="text">
-        <string>All responses</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Only sent</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Not sent</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Sent on or after...</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Sent on or before...</string>
-       </property>
-      </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="lastNameLabel">
+      <property name="text">
+       <string>lastName</string>
+      </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="pushButton">
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lastNameLineEdit"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QPushButton" name="btnSubmit">
       <property name="text">
        <string>Search</string>
       </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="sentStatusLabel">
+      <property name="text">
+       <string>sentStatus</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="sentStatusComboBox">
+      <item>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Sent invitations only</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Unsent invitations</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>On or before...</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>On or after...</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>
