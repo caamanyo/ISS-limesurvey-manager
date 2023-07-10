@@ -52,7 +52,7 @@ class TableModel(QAbstractTableModel):
         """Get column name based of an index."""
         return self._data.columns[index.column()]
 
-    def getColumnData(self, row: int):
+    def getRowData(self, row: int):
         """Return a row form the dataframe."""
         return self._data.iloc[row]
 

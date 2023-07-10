@@ -29,7 +29,6 @@ class ParticipantData(ParticipantFile):
     def __init__(self, data):
         self.data = data
         self.files = []
-        breakpoint()
         self.root_dir = cfg.EXPORTATION_FOLDER
         self.fullname = f"{self.data.lastname}, {self.data.firstname}"
         self.alumnus_dirs = [self.data.attribute_3, self.fullname]
@@ -56,4 +55,4 @@ class ParticipantData(ParticipantFile):
 
         for file in self.files:
             file.export_file(folder)
-            print(file.filename)
+        return f"Els arxius s'han descarregar amb èxit a la carpeta {'/'.join([*self.alumnus_dirs])}."
