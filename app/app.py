@@ -59,14 +59,20 @@ class Window(QMainWindow):
         """Fetch LS participants based on form responses."""
         invitation_sent_idx = self.search_ui.ui.sentStatusComboBox.currentIndex()
         lastname = self.search_ui.ui.lastNameLineEdit.text()
+        completed_idx = self.search_ui.ui.completedStatusComboBox.currentIndex()
 
+        # Create search conditions to send to LS.
         conditions = SearchConditions()
         conditions.set_inv_sent(invitation_sent_idx)
         conditions.set_lastname(lastname)
+        conditions.set_complete(completed_idx)
+
+        # Fetch participants based on chosen conditions.
         res = self.ls.token.list_participants(
             292257,
             attributes=["attribute_3", "attribute_4", "sent", "completed"],
             conditions=conditions.to_dict())
+        breakpoint()
         flat_res = pd.json_normalize(res)
         data = pd.DataFrame.from_dict(flat_res)
         data = data.rename(

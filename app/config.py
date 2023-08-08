@@ -5,4 +5,4 @@
 GENERAL_FORM_ID = 292257
 
 # Folder to store exported files
-EXPORTATION_FOLDER = 'fitxers exportats'
+EXPORTATION_FOLDER = 'fitxers_exportats'

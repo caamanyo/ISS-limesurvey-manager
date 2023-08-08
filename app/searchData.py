@@ -5,18 +5,34 @@ from dataclasses import dataclass, fields
 
 @dataclass
 class SearchConditions:
+    firstname: str = None
     lastname: str = None
     sent: list = None
+    completed: str = None
 
-    def set_inv_sent(self, data: int, date: str = None):
-        match data:
+    def _dropdown_options(self, opt: int):
+        match opt:
+            case 0:
+                return None
             case 1:
-                self.sent = ["<>", "N"]
+                return ["<>", "N"]
             case 2:
-                self.sent = ["=", "N"]
+                return ["=", "N"]
+
+    def _text_input(self, value: str):
+        return ["LIKE", value]
+
+    def set_inv_sent(self, value: int, date: str = None):
+        self.sent = self._dropdown_options(value)
 
     def set_lastname(self, value: str):
-        self.lastname = ["LIKE", value]
+        self.lastname = self._text_input(value)
+
+    def set_firstname(self, value: str):
+        self.firstname = self._text_input(value)
+
+    def set_complete(self, value: int):
+        self.completed = self._dropdown_options(value)
 
     def to_dict(self):
         condition_dict = {}
@@ -25,5 +41,4 @@ class SearchConditions:
             if val is not None:
                 condition_dict[field.name] = val
 
-        print(condition_dict)
         return condition_dict
