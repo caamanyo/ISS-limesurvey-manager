@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "ls-export-files"
+version = "0.2.0"
+description = "Export all documents from a Limesurvey participant."
+authors = ["Miquel Caamaño Salom <kamanyo@gmailcom>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyperclip = "^1.8.2"
+
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+portray = "^1.8.0"
+python-lsp-ruff = "^2.1.0"
+python-lsp-isort = "^0.1"
+pudb = "^2024.1"
+pylsp-mypy = "^0.6.8"
+
+[tool.portray]
+modules = ["absence_notifier"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
