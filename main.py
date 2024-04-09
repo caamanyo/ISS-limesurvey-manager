@@ -42,8 +42,10 @@ def run():
     api.open(password=password)
 
     # Participant token to search for.
-    token_list = list(pyperclip.paste())
-    print(token_list)
+    token_list = pyperclip.paste().splitlines()
+    if not all((len(token) == 15 for token in token_list)):
+        print("Invalid Token found.")
+        return
 
     for token in token_list:
         al_data = api.token.get_participant_properties(
@@ -62,7 +64,6 @@ def run():
         cicle_response = api.query("get_uploaded_files", params)
         cicle_files = ensure_dictionary(cicle_response)
 
-        # TODO: Extract files form the general form.
         params["surveyid"] = GENERAL_FORM_ID
         general_response = api.query("get_uploaded_files", params)
         general_files = ensure_dictionary(general_response)
