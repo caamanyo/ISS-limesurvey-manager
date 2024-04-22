@@ -21,6 +21,7 @@ python-lsp-ruff = "^2.1.0"
 python-lsp-isort = "^0.1"
 pudb = "^2024.1"
 pylsp-mypy = "^0.6.8"
+python-lsp-black = "^2.0.0"
 
 [tool.portray]
 modules = ["absence_notifier"]
