@@ -1,10 +1,13 @@
 import base64
 import os
+import shutil
 import time as t
 from collections import OrderedDict
+from json import load
 
 import pyperclip  # type:ignore
-from dotenv import load_dotenv  # type:ignore
+from dotenv import load_dotenv
+from limesurveyrc2api.exceptions import LimeSurveyError
 from limesurveyrc2api.limesurvey import LimeSurvey  # type:ignore
 
 load_dotenv()
@@ -30,27 +33,80 @@ def ensure_dictionary(suspect):
     return suspect
 
 
+def remove_all_files(path):
+    """Remove all files from a selected folder."""
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print("Failed to delete %s. Reason: %s" % (file_path, e))
+
+
 @log_time
 def run():
     """Initialize program."""
     url = os.getenv("url")
-    username = os.getenv("username")
+    username = os.getenv("ls_user")
     password = os.getenv("password")
+    # exported_path = "fitxers exportats"
+    exported_path = "test"
+    with open("forms_config.json") as f:
+        course_list = load(f)
+
     GENERAL_FORM_ID = 292257
 
+    # Open a session.
     api = LimeSurvey(url=url, username=username)
     api.open(password=password)
 
     # Participant token to search for.
     token_list = pyperclip.paste().splitlines()
-    if not all((len(token) == 15 for token in token_list)):
-        print("Invalid Token found.")
+    if not all(len(token) == 15 for token in token_list):
+        print("Invalid token found.")
         return
 
+    print(f" Hi ha {len(token_list)} tokens.")
+    while True:
+        try:
+            answer = input(
+                "De quin cicle són? S'ha d'introduir el codi del cicle (HIG, TAP, etc...): "
+            ).upper()
+            course_conf = list(
+                filter(lambda c: c["code"] == answer, course_list)
+            )[0]
+        except IndexError:
+            print("Aquest cicle no existeix.")
+        else:
+            break
+
+    if course_conf["single_form"]:
+        survey_id = course_conf["survey_id"]
+    else:
+        survey_id = GENERAL_FORM_ID
+
     for token in token_list:
-        al_data = api.token.get_participant_properties(
-            GENERAL_FORM_ID, token_query_properties={"token": token}
-        )
+        try:
+            al_data = api.token.get_participant_properties(
+                survey_id, token_query_properties={"token": token}
+            )
+        except LimeSurveyError as e:
+            print(e)
+            return
+        al_fullname = f"{al_data['lastname']}, {al_data['firstname']}"
+        al_cicle = al_data["attribute_3"]
+        if len(al_cicle) > 3:
+            al_cicle = al_cicle[3]
+
+        # Create alumnus folder
+        al_path = f"{exported_path}/{al_cicle}/{al_fullname}"
+        if not os.path.exists(al_path):
+            os.makedirs(al_path)
+        else:
+            remove_all_files(al_path)
 
         params = OrderedDict(
             [
@@ -60,31 +116,29 @@ def run():
             ]
         )
 
-        # Get a list of all the files related to that participant
         cicle_response = api.query("get_uploaded_files", params)
         cicle_files = ensure_dictionary(cicle_response)
+        results = cicle_files
 
-        params["surveyid"] = GENERAL_FORM_ID
-        general_response = api.query("get_uploaded_files", params)
-        general_files = ensure_dictionary(general_response)
-
-        results = {**cicle_files, **general_files}
+        if not course_conf["single_form"]:
+            params["surveyid"] = GENERAL_FORM_ID
+            general_response = api.query("get_uploaded_files", params)
+            general_files = ensure_dictionary(general_response)
+            results = {**cicle_files, **general_files}
 
         for [key, value] in results.items():
-            # Check if table exists
-            if key == "status":
-                continue
-
             # Decode file
             with open(
-                f"fitxers exportats/{al_data['lastname']}, {al_data['firstname']} - {value['meta']['question']['title']}.pdf",
+                f"{al_path}/{al_fullname} - {value['meta']['question']['title']}.pdf",
                 "wb",
             ) as f:
                 f.write(base64.b64decode(value["content"]))
 
     # Close the session.
     api.close()
+    print("Fitxers descarregats correctament.")
 
 
 if __name__ == "__main__":
     run()
+    input("Prem ENTER per tancar la finestra")
