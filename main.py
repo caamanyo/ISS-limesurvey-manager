@@ -7,10 +7,11 @@ from json import load
 
 import pyperclip  # type:ignore
 from dotenv import load_dotenv
-from limesurveyrc2api.exceptions import LimeSurveyError
+from limesurveyrc2api.exceptions import LimeSurveyError  # type:ignore
 from limesurveyrc2api.limesurvey import LimeSurvey  # type:ignore
 
 load_dotenv()
+OPTIONS = ["d", "q"]
 
 
 def log_time(func):
@@ -139,6 +140,24 @@ def run():
     print("Fitxers descarregats correctament.")
 
 
+def show_menu():
+    print()
+    print("*** Exportació de fitxers Limesurvey ***")
+    print("PASSOS:")
+    print("1. Copiar tokens")
+    print("2. Escull la opció desitjada (d,q) i prem ENTER:")
+    print("\td. Descarregar fitxers dels tokens copiats.")
+    print("\tq. Sortir")
+
+
 if __name__ == "__main__":
-    run()
-    input("Prem ENTER per tancar la finestra")
+    show_menu()
+    while True:
+        opt = input("=> ")
+        match opt.lower():
+            case "d":
+                run()
+            case "q":
+                break
+            case _:
+                print("Aquesta opció no és vàlida. Opcions:", *OPTIONS)
