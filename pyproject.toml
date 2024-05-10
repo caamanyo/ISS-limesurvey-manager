@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "ls-export-files"
+name = "ISS-limesurvey-manager"
 version = "0.2.0"
-description = "Export all documents from a Limesurvey participant."
+description = "Manage Institut Salvador Segui's Limesurvey environment."
 authors = ["Miquel Caamaño Salom <kamanyo@gmailcom>"]
 readme = "README.md"
 package-mode = false
@@ -24,7 +24,7 @@ pylsp-mypy = "^0.6.8"
 python-lsp-black = "^2.0.0"
 
 [tool.portray]
-modules = ["absence_notifier"]
+modules = ["limesurvey_manager"]
 
 [build-system]
 requires = ["poetry-core"]
