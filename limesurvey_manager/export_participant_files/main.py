@@ -54,7 +54,7 @@ def run():
     """Initialize program."""
     creds = set_creds()
     # exported_path = "fitxers exportats"
-    exported_path = "test"
+    exported_path = "fitxers exportats"
     with open("forms_config.json") as f:
         course_list = load(f)
 
@@ -129,6 +129,11 @@ def run():
 
         for [key, value] in results.items():
             # Decode file
+            if key == "status":
+                print()
+                print(f"\tL'alumne {al_fullname} no té fitxers per exportar.")
+                print()
+                continue
             with open(
                 f"{al_path}/{al_fullname} - {value['meta']['question']['title']}.pdf",
                 "wb",
