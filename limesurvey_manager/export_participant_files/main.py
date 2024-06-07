@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 from limesurveyrc2api.exceptions import LimeSurveyError  # type:ignore
 from limesurveyrc2api.limesurvey import LimeSurvey  # type:ignore
 
+from limesurvey_manager.credentials.credentials import set_creds
+
 load_dotenv()
 OPTIONS = ["d", "q"]
 
@@ -50,9 +52,7 @@ def remove_all_files(path):
 @log_time
 def run():
     """Initialize program."""
-    url = os.getenv("url")
-    username = os.getenv("ls_user")
-    password = os.getenv("password")
+    creds = set_creds()
     # exported_path = "fitxers exportats"
     exported_path = "test"
     with open("forms_config.json") as f:
@@ -61,8 +61,8 @@ def run():
     GENERAL_FORM_ID = 292257
 
     # Open a session.
-    api = LimeSurvey(url=url, username=username)
-    api.open(password=password)
+    api = LimeSurvey(url=creds.url, username=creds.username)
+    api.open(password=creds.password)
 
     # Participant token to search for.
     token_list = pyperclip.paste().splitlines()
@@ -161,3 +161,4 @@ if __name__ == "__main__":
                 break
             case _:
                 print("Aquesta opció no és vàlida. Opcions:", *OPTIONS)
+        show_menu()
