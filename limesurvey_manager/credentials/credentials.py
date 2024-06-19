@@ -8,6 +8,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+class MissingCredentialsError(Exception):
+    pass
+
+
 @dataclass
 class Credentials:
     """Store LS credentials."""
@@ -17,10 +21,15 @@ class Credentials:
     password: str
 
 
-def set_creds():
-    """Initialize credentials and returns Credentials class."""
-    url = os.getenv("url")
-    username = os.getenv("ls_user")
-    password = os.getenv("password")
+def set_creds() -> Credentials:
+    """Initialize credentials. Raises MissingCredentials if environment variables are not present."""
+    creds = {
+        "url": os.getenv("url"),
+        "username": os.getenv("ls_user"),
+        "password": os.getenv("password"),
+    }
+    for k, v in creds.items():
+        if not v:
+            raise MissingCredentialsError(f"Missing credential: {k}")
 
-    return Credentials(url, username, password)
+    return Credentials(**creds)  # type:ignore
