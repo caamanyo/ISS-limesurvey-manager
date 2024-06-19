@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ISS-limesurvey-manager"
+name = "limesurvey-manager"
 version = "0.2.0"
 description = "Manage Institut Salvador Segui's Limesurvey environment."
 authors = ["Miquel Caamaño Salom <kamanyo@gmailcom>"]
@@ -12,7 +12,8 @@ pyperclip = "^1.8.2"
 python-dotenv = "^1.0.1"
 limesurveyrc2api = "^2.0.0"
 
-
+[tool.pytest.ini_options]
+pythonpath = "."
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
@@ -22,6 +23,7 @@ python-lsp-isort = "^0.1"
 pudb = "^2024.1"
 pylsp-mypy = "^0.6.8"
 python-lsp-black = "^2.0.0"
+pytest-pudb = "^0.7.0"
 
 [tool.portray]
 modules = ["limesurvey_manager"]
