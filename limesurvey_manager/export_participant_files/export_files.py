@@ -50,7 +50,7 @@ def remove_all_files(path):
 
 
 @log_time
-def run():
+def export_files():
     """Initialize program."""
     creds = set_creds()
     # exported_path = "fitxers exportats"
@@ -155,13 +155,13 @@ def show_menu():
     print("\tq. Sortir")
 
 
-if __name__ == "__main__":
+def export_participant_files():
     show_menu()
     while True:
         opt = input("=> ")
         match opt.lower():
             case "d":
-                run()
+                export_files()
             case "q":
                 break
             case _:
