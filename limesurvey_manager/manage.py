@@ -22,7 +22,7 @@ class File:
 
 def menu():
     parser = argparse.ArgumentParser(prog="Limesurvey Manager")
-    subparsers = parser.add_subparsers(help="prova")
+    subparsers = parser.add_subparsers(help="prova", required=True)
 
     parser_export = subparsers.add_parser("export", help="export functionality")
     parser_export.add_argument(
