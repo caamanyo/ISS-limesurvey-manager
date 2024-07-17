@@ -24,6 +24,7 @@ pudb = "^2024.1"
 pylsp-mypy = "^0.6.8"
 python-lsp-black = "^2.0.0"
 pytest-pudb = "^0.7.0"
+pylsp-autoimport = "^0.1.0"
 
 [tool.portray]
 modules = ["limesurvey_manager"]

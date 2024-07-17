@@ -49,7 +49,6 @@ def remove_all_files(path):
             print("Failed to delete %s. Reason: %s" % (file_path, e))
 
 
-@log_time
 def export_files():
     """Initialize program."""
     creds = set_creds()
@@ -112,12 +111,13 @@ def export_files():
         params = OrderedDict(
             [
                 ("sessionkey", api.session_key),
-                ("surveyid", al_data["attribute_4"]),
+                ("surveyid", survey_id),
                 ("token", token),
             ]
         )
 
         cicle_response = api.query("get_uploaded_files", params)
+        breakpoint()
         cicle_files = ensure_dictionary(cicle_response)
         results = cicle_files
 
@@ -127,22 +127,23 @@ def export_files():
             general_files = ensure_dictionary(general_response)
             results = {**cicle_files, **general_files}
 
+        if not cicle_files or "status" in results.keys():
+            print()
+            print(f"\tL'alumne {al_fullname} no té fitxers per exportar.")
+            print()
+            continue
+
         for [key, value] in results.items():
             # Decode file
-            if key == "status":
-                print()
-                print(f"\tL'alumne {al_fullname} no té fitxers per exportar.")
-                print()
-                continue
             with open(
                 f"{al_path}/{al_fullname} - {value['meta']['question']['title']}.pdf",
                 "wb",
             ) as f:
                 f.write(base64.b64decode(value["content"]))
+        print(f"Els fitxers de {al_fullname} es troben a {al_path}.")
 
     # Close the session.
     api.close()
-    print("Fitxers descarregats correctament.")
 
 
 def show_menu():

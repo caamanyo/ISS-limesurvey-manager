@@ -1,7 +1,10 @@
 """Limesurvey invitation sender."""
 
 import logging
+import pprint
 import time
+from collections import OrderedDict
+from json import load
 
 from limesurveyrc2api.exceptions import LimeSurveyError  # type:ignore
 from limesurveyrc2api.limesurvey import LimeSurvey  # type:ignore
@@ -16,19 +19,19 @@ logging.basicConfig(
 )
 
 
-def log_errors(func):
+def log_errors(func, *args, **kwargs):
     """Log Limesurvey errors to file."""
 
-    def wrapper():
+    def wrapper(*args, **kwargs):
         try:
-            return func()
+            return func(*args, **kwargs)
         except LimeSurveyError as e:
             logging.warning(e.message)
 
     return wrapper
 
 
-def fetch_participants(survey_id: int, limit: int, conditions: dict):
+def fetch_participants(survey_id: str, limit: int, conditions: dict) -> list:
     """Fetch a number of participants from a survey."""
     try:
         res = ls.token.list_participants(
@@ -42,21 +45,26 @@ def fetch_participants(survey_id: int, limit: int, conditions: dict):
             raise e
 
 
-def send_invites(survey_id: int, token_ids: list):
+def send_invites(survey_id: str, token_ids: list):
     """Fetch a number of participants from a survey and sends them the invite."""
     # Send invitations with the token ids.
     result = ls.token.invite_participants(survey_id, token_ids)
+    return result
+
+
+def get_survey_group_id(survey_id: int) -> int:
+    survey_properties = ls.query(
+        "get_survey_properties",
+        OrderedDict(sSessionKey=ls.session_key, iSurveyID=survey_id),
+    )
+    return survey_properties["gsid"]
 
 
 @log_errors
-def invite_participants():
+def invite_participants(survey_id: str, email_limit: int = 10):
     """Invite participants to a specific survey. Returns False if there is no more participants."""
-    # Survey to fetch from.
-    survey_id = 292257
     # Fetch participants with unsent invitations and uncompleted responses.
     conditions = {"sent": "N", "completed": "N"}
-    # This limit determines how many emails will be sent.
-    email_limit = 10
 
     parts = fetch_participants(survey_id, email_limit, conditions)
     if not parts:
@@ -65,13 +73,16 @@ def invite_participants():
     token_ids = [part["tid"] for part in parts]
 
     # Send invitations.
-    # send_invites(survey_id, token_ids)
+    # pprint.pp(parts)
+    send_invites(survey_id, token_ids)
     return True
 
 
 if __name__ == "__main__":
     # Set the credentials.
     creds = set_creds()
+    with open("forms_config.json") as f:
+        survey_list = load(f)
 
     # Instatiate LS remote control.
     ls = LimeSurvey(creds.url, creds.username)
@@ -79,11 +90,27 @@ if __name__ == "__main__":
     # Start connection.
     ls.open(creds.password)
 
-    participants_left = invite_participants()
-    while participants_left:
-        time.sleep(60)
-        participants_left = invite_participants()
+    all_surveys = ls.survey.list_surveys()
+    active_surveys = [sur["sid"] for sur in all_surveys if sur["active"] == "Y"]
+
+    survey_list = list(
+        filter(lambda sur: sur["survey_id"] in active_surveys, survey_list)
+    )
+
+    print("***Formularis seleccionats:***")
+    pprint.pp(survey_list)
+
+    confirm = input("Enviar correus?")
+
+    if confirm not in ["Y", "y"]:
+        exit(1)
+
+    for survey in survey_list:
+        print(survey["code"])
+        participants_left = invite_participants(survey["survey_id"])
+        while participants_left:
+            time.sleep(60)
+            participants_left = invite_participants(survey["survey_id"])
 
     print("No hi ha més invitacions a enviar.")
-    # End LS connection.
     ls.close()
