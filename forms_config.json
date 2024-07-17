@@ -2,96 +2,103 @@
 	{
 		"code": "TEI",
 		"survey_id": "872234",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "TIS",
 		"survey_id": "733285",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "TAP",
 		"survey_id": "287411",
-		"single_form": true
+		"single_form": true,
+		"is_gs": false
 	},
 	{
 		"code": "ASC",
 		"survey_id": "659867",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "EIB",
 		"survey_id": "985532",
-		"single_form": true
+		"single_form": true,
+		"is_gs": false
 	},
 	{
 		"code": "PER",
 		"survey_id": "716468",
-		"single_form": true
+		"single_form": true,
+		"is_gs": false
 	},
 	{
 		"code": "AIP",
 		"survey_id": "131718",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "CAR",
 		"survey_id": "359221",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "EID",
 		"survey_id": "251352",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "TER",
 		"survey_id": "296222",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "CAI",
 		"survey_id": "177454",
-		"single_form": true
+		"single_form": true,
+		"is_gs": false
 	},
 	{
 		"code": "HIG",
 		"survey_id": "512144",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "PRO",
 		"survey_id": "174128",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "OPT",
 		"survey_id": "517519",
-		"single_form": true
-	},
-	{
-		"code": "MED",
-		"survey_id": "634631",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "EST",
 		"survey_id": "194411",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "AUD",
 		"survey_id": "372362",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	},
 	{
 		"code": "ORT",
 		"survey_id": "542654",
-		"single_form": true
-	},
-	{
-		"code": "AAA",
-		"survey_id": "618941",
-		"single_form": true
+		"single_form": true,
+		"is_gs": true
 	}
 ]
