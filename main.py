@@ -92,7 +92,9 @@ def run():
     for token in token_list:
         try:
             al_data = api.token.get_participant_properties(
-                survey_id, token_query_properties={"token": token}
+                survey_id,
+                token_id=None,
+                token_query_properties={"token": token},
             )
         except LimeSurveyError as e:
             print(e)
